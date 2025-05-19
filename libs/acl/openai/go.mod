@@ -16,6 +16,7 @@ require (
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/evanphx/json-patch v0.5.2 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/goph/emperror v0.17.2 // indirect
@@ -47,3 +48,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/meguminnnnnnnnn/go-openai v0.0.0-20250408071642-761325becfd6 => github.com/szyhf/go-openai v0.0.0-20250519081900-2769f9dc59b9
