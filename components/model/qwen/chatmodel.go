@@ -107,6 +107,10 @@ type ChatModelConfig struct {
 	// User unique identifier representing end-user
 	// Optional. Helps OpenAI monitor and detect abuse
 	User *string `json:"user,omitempty"`
+
+	// EnableThinking enables thinking mode
+	// Optional. Default: base on the Model
+	EnableThinking *bool `json:"enable_thinking,omitempty"`
 }
 
 type ChatModel struct {
@@ -154,11 +158,13 @@ func NewChatModel(ctx context.Context, config *ChatModelConfig) (*ChatModel, err
 func (cm *ChatModel) Generate(ctx context.Context, in []*schema.Message, opts ...model.Option) (
 	outMsg *schema.Message, err error) {
 	ctx = callbacks.EnsureRunInfo(ctx, cm.GetType(), components.ComponentOfChatModel)
+	opts = cm.parseCustomOpetions(opts...)
 	return cm.cli.Generate(ctx, in, opts...)
 }
 
 func (cm *ChatModel) Stream(ctx context.Context, in []*schema.Message, opts ...model.Option) (outStream *schema.StreamReader[*schema.Message], err error) {
 	ctx = callbacks.EnsureRunInfo(ctx, cm.GetType(), components.ComponentOfChatModel)
+	opts = cm.parseCustomOpetions(opts...)
 	outStream, err = cm.cli.Stream(ctx, in, opts...)
 	if err != nil {
 		return nil, err
@@ -203,6 +209,18 @@ func (cm *ChatModel) BindTools(tools []*schema.ToolInfo) error {
 
 func (cm *ChatModel) BindForcedTools(tools []*schema.ToolInfo) error {
 	return cm.cli.BindForcedTools(tools)
+}
+
+func (cm *ChatModel) parseCustomOpetions(opts ...model.Option) []model.Option {
+	qwenOpts := model.GetImplSpecificOptions(&options{}, opts...)
+	extraFields := make(map[string]any)
+	if qwenOpts.EnableThinking != nil {
+		extraFields["enable_thinking"] = *qwenOpts.EnableThinking
+	}
+	if len(extraFields) > 0 {
+		opts = append(opts, openai.WithExtraFields(extraFields))
+	}
+	return opts
 }
 
 const typ = "Qwen"

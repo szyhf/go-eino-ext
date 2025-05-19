@@ -47,3 +47,5 @@ require (
 	golang.org/x/term v0.27.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/cloudwego/eino-ext/libs/acl/openai v0.0.0-20250519084852-38fafa73d9ea => github.com/szyhf/go-eino-ext/libs/acl/openai v0.0.0-20250519090333-d6745a42afd7
