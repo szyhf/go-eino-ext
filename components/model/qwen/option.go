@@ -16,7 +16,9 @@
 
 package qwen
 
-import "github.com/cloudwego/eino/components/model"
+import (
+	"github.com/cloudwego/eino/components/model"
+)
 
 // options is the specific options for the qwen
 type options struct {
@@ -24,17 +26,6 @@ type options struct {
 	// Optional. Default: base on the Model
 	// https://help.aliyun.com/zh/model-studio/deep-thinking
 	EnableThinking *bool
-
-	// ExtraFields will override any existing fields with the same key.
-	// Optional. Useful for experimental features not yet officially supported.
-	ExtraFields map[string]any
-}
-
-// WithExtraFields is the option to set the extra fields for the model.
-func WithExtraFields(extraFields map[string]any) model.Option {
-	return model.WrapImplSpecificOptFn(func(opt *options) {
-		opt.ExtraFields = extraFields
-	})
 }
 
 // WithEnableThinking is the option to set the enable thinking for the model.

@@ -112,10 +112,6 @@ type ChatModelConfig struct {
 	// https://help.aliyun.com/zh/model-studio/deep-thinking
 	// Optional. Default: base on the Model
 	EnableThinking *bool `json:"enable_thinking,omitempty"`
-
-	// ExtraFields will override any existing fields with the same key.
-	// Optional. Useful for experimental features not yet officially supported.
-	ExtraFields map[string]any `json:"-"`
 }
 
 type ChatModel struct {
@@ -152,7 +148,6 @@ func NewChatModel(ctx context.Context, config *ChatModelConfig) (*ChatModel, err
 		FrequencyPenalty: config.FrequencyPenalty,
 		LogitBias:        config.LogitBias,
 		User:             config.User,
-		ExtraFields:      config.ExtraFields,
 	})
 	if err != nil {
 		return nil, err
@@ -163,7 +158,6 @@ func NewChatModel(ctx context.Context, config *ChatModelConfig) (*ChatModel, err
 
 		extraOptions: &options{
 			EnableThinking: config.EnableThinking,
-			ExtraFields:    config.ExtraFields,
 		},
 	}, nil
 }
@@ -227,17 +221,12 @@ func (cm *ChatModel) BindForcedTools(tools []*schema.ToolInfo) error {
 func (cm *ChatModel) parseCustomOpetions(opts ...model.Option) []model.Option {
 	qwenOpts := model.GetImplSpecificOptions(&options{
 		EnableThinking: cm.extraOptions.EnableThinking,
-		ExtraFields:    cm.extraOptions.ExtraFields,
 	}, opts...)
 
 	// Using extra fields to pass the custom options to the underlying client
 	extraFields := make(map[string]any)
 	if qwenOpts.EnableThinking != nil {
 		extraFields["enable_thinking"] = *qwenOpts.EnableThinking
-	}
-	// override existing config
-	for k, v := range qwenOpts.ExtraFields {
-		extraFields[k] = v
 	}
 	if len(extraFields) > 0 {
 		opts = append(opts, openai.WithExtraFields(extraFields))
