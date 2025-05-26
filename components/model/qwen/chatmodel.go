@@ -213,7 +213,7 @@ func (cm *ChatModel) WithTools(tools []*schema.ToolInfo) (model.ToolCallingChatM
 	if err != nil {
 		return nil, err
 	}
-	return &ChatModel{cli: cli}, nil
+	return &ChatModel{cli: cli, extraOptions: cm.extraOptions}, nil
 }
 
 func (cm *ChatModel) BindTools(tools []*schema.ToolInfo) error {
